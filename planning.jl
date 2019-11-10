@@ -577,6 +577,9 @@ function expand_graph(pg::PlanningGraph)
     build_level_links(last_level, pg.pddl.actions, pg.objects);
     find_mutex_links(last_level);
     push!(pg.levels, perform_actions(last_level));
+#     for (i, level) in enumerate(pg.levels)
+#         println("Expanded graph level $i: ", level)
+#     end
     nothing;
 end
 
@@ -717,9 +720,7 @@ function graphplan(gpp::GraphPlanProblem, goals::Tuple)
     while (true)
         if (goal_test(gpp, goals_positive) && non_mutex_goals(gpp.graph, vcat(goals_positive, goals_negated), -1))
             solution = extract_solution(gpp, goals_positive, goals_negated, -1);
-            println("\nSolution:")
-            show(solution)
-
+#             println("Solution: ", solution)
             if (!(typeof(solution) <: Nothing))
                 return solution;
             end
@@ -896,7 +897,7 @@ end
     in addition to the states, action schemas, and the goal test found in the PDDL datatype.
 
 =#
-struct HighLevelPDDL <: AbstractPDDL
+struct HighLevelPDDL <: AbstractPDDL 
     kb::FirstOrderLogicKnowledgeBase
     actions::Array{PlanningHighLevelAction, 1}
     goal_test::Function
@@ -963,8 +964,8 @@ end
 """
     hierarchical_search(problem, hierarchy)
 
-Use the breadth-first implementation of the Hierarchical Search algorithm (Fig. 11.5) to the
-given high-level planning problem 'problem' and 'hierarchy'. Return the solution or 'nothing'
+Use the breadth-first implementation of the Hierarchical Search algorithm (Fig. 11.5) to the 
+given high-level planning problem 'problem' and 'hierarchy'. Return the solution or 'nothing' 
 on failure.
 """
 function hierarchical_search(problem::HighLevelPDDL, hierarchy)
